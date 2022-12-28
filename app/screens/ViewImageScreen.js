@@ -9,6 +9,7 @@ export default function ViewImageScreen()
 
     return (
         <View style={styles.container}>
+
             <View style={styles.closeIcon}>
                 <MaterialCommunityIcons name="close" color="white" size={30} />
             </View>

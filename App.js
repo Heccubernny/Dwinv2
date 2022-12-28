@@ -1,16 +1,14 @@
 
-// import { View } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TailwindProvider } from 'tailwind-rn';
 import
 {
-  AccountScreen,
-  ListingDetailsScreen, ListingEditScreen, ListingsScreen,
+  AccountScreen, FindHouseScreen, ListingDetailsScreen, ListingEditScreen, ListingsScreen,
   LoginScreen,
-  MessagesScreen,
-  ProductScreen,
+  MessagesScreen, OnBoardScreen, ProductScreen,
   RegisterScreen,
   ViewImageScreen,
   WelcomeScreen
@@ -33,6 +31,8 @@ export default function App()
             {/* <DetailsScreen /> */}
             {/* <Screen/> */}
             {/* <Screen /> */}
+            <StatusBar translucent={false} />
+
             <Stack.Navigator initialRouteName="Home">
               <Stack.Screen options={{ headerShown: false }} name="Home" component={WelcomeScreen} />
               <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
@@ -48,7 +48,8 @@ export default function App()
               <Stack.Screen options={{ headerShown: false }} name="Account" component={AccountScreen} />
               <Stack.Screen options={{ headerShown: false }} name="Listing" component={ListingsScreen} />
               <Stack.Screen options={{ headerShown: false }} name="ListingEdit" component={ListingEditScreen} />
-
+              <Stack.Screen options={{ headerShown: false }} name="OnBoard" component={OnBoardScreen} />
+              <Stack.Screen options={{ headerShown: false }} name="FindHouse" component={FindHouseScreen} />
               <Stack.Screen options={{ headerShown: false }} name="Camera" component={Camera} />
 
 

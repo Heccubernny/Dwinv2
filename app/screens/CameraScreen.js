@@ -52,6 +52,7 @@ export default function CameraScreen()
             else
             {
                 let source = { uri: response.uri };
+                console.log("Source", source)
                 setResourcePath(source);
             }
         });

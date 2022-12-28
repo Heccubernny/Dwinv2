@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Alert, Image, PermissionsAndroid, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { Alert, Image, PermissionsAndroid, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import colors from '../config/colors';
 import Icon from './Icon';
@@ -8,35 +8,26 @@ export default function ImageInput({ resourcePath, onChangeImage })
 {
     useEffect(() =>
     {
-        if (resourcePath) onChangeImage(resourcePath);
         requestCameraPermission();
+        // if (resourcePath) onChangeImage(resourcePath);/// <--- This is the line that is causing the problem
     }, []);
-
 
     const requestCameraPermission = async () =>
     {
         try
         {
-            const granted = await PermissionsAndroid.request(
+            const granted = await PermissionsAndroid.requestMultiple([
                 PermissionsAndroid.PERMISSIONS.CAMERA,
-                {
-                    title: "Cool Photo App Camera Permission",
-                    message:
-                        "Cool Photo App needs access to your camera " +
-                        "so you can take awesome pictures.",
-                    buttonNeutral: "Ask Me Later",
-                    buttonNegative: "Cancel",
-                    buttonPositive: "OK"
-                }
-            );
-
+                PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            ]);
             if (granted === PermissionsAndroid.RESULTS.GRANTED)
             {
-                alert("You can use the camera");
-            }
-            else
+                // selectImage();
+                console.log('You can use the camera');
+            } else
             {
-                alert("Camera permission denied");
+                console.log('Permission denied');
             }
         }
         catch (err)
@@ -44,6 +35,29 @@ export default function ImageInput({ resourcePath, onChangeImage })
             console.warn(err);
         }
     };
+
+    const handleDelete = () =>
+    {
+        // setResourcePath({});
+        Alert.alert("Delete", "Are you sure you want to delete this image?", [
+            { text: "Yes", onPress: () => onChangeImage(null) },
+            { text: "No" },
+        ])
+
+    }
+
+    const handlePress = () =>
+    {
+        if (!resourcePath)
+        {
+            console.log("Before ResourcePath", resourcePath);
+
+            selectImage()
+            console.log("After ResourcePath", resourcePath);
+
+        }
+        else handleDelete();
+    }
 
     const selectImage = () =>
     {
@@ -59,30 +73,8 @@ export default function ImageInput({ resourcePath, onChangeImage })
                 {
                     console.log('ImagePicker Error:', response.error);
                 }
-                else if (response.errorCode == 'camera_unavailable')
-                {
-                    console.log('Camera not available on device');
-                }
-                else if (response.errorCode == 'permission')
-                {
-                    console.log('Permission not satisfied');
-                }
-                else if (response.errorCode == 'others')
-                {
-                    console.log(response.errorMessage);
-                }
-                else if (response.errorMessage)
-                {
-                    alert('ImagePicker Error: ' + errorMessage);
-                }
-
-                else if (response.didCancel)
-                {
-                    alert('User cancelled image picker');
-                }
                 else
                 {
-
                     // setResourcePath({ uri: response.assets[ 0 ].uri });
                     onChangeImage(response.assets[ 0 ].uri);
                     console.log("Response", response.assets[ 0 ].uri);
@@ -97,40 +89,17 @@ export default function ImageInput({ resourcePath, onChangeImage })
         }
     }
 
-    const handleDelete = () =>
-    {
-        // setResourcePath({});
-        Alert.alert("Delete", "Are you sure you want to delete this image?", [
-            { text: "Yes", onPress: () => onChangeImage(null) },
-            { text: "No" },
-        ])
-
-    }
-
-    const handlePress = () =>
-    {
-        if (!resourcePath) selectImage();
-        else handleDelete();
-    }
-
     return (
-        <>
-            <Image source={{ uri: resourcePath }} style={{ width: 100, height: 100 }} />
+        <TouchableWithoutFeedback onPress={handlePress}>
+            {/* What shows the image */}
+            <View style={styles.container}>
+                {!resourcePath && <Icon name={"camera"} size={90} iconColor={colors.medium} backgroundColor={colors.white} />}
+                {/* What shows the image */}
+                {console.log("Yeag", resourcePath)}
+                {resourcePath && <Image source={{ uri: resourcePath }} style={styles.image} />}
+            </View>
+        </TouchableWithoutFeedback>
 
-            <TouchableWithoutFeedback onPress={handlePress}>
-                <View style={styles.container}>
-                    {!resourcePath && <Icon name={"camera"} size={90} iconColor={colors.medium} backgroundColor={colors.white} />}
-
-
-                    <TouchableOpacity onLongPress={handleDelete}>
-                        {resourcePath && <Image source={{ uri: resourcePath }} style={{ width: 100, height: 100 }} />}
-                        {/* <Image source={{ uri: resourcePath }} style={{ width: 100, height: 100 }} /> */}
-
-                    </TouchableOpacity>
-
-                </View>
-            </TouchableWithoutFeedback>
-        </>
     );
 }
 

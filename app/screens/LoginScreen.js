@@ -1,4 +1,4 @@
-import { Image, StyleSheet } from 'react-native';
+import { Image, StatusBar, StyleSheet } from 'react-native';
 import * as Yup from 'yup';
 import { Screen } from '../components';
 import { AppForm, AppFormField, SubmitButton } from '../components/forms';
@@ -13,6 +13,8 @@ export default function LoginScreen({ navigation })
 {
     return (
         <Screen style={styles.container}>
+            <StatusBar translucent={false} />
+
             <Image source={require('../assets/logo.png')} style={styles.logo} />
             <AppForm
                 initialValues={{ email: 'text@example.com', password: 'examplebiou' }}

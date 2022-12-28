@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Alert, PermissionsAndroid, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { Alert, StyleSheet } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import * as Yup from 'yup';
-import { CategoryPickerItem, ImageInput, Screen } from '../components';
+import { CategoryPickerItem, Screen } from '../components';
 import { AppForm, AppFormField, AppFormPicker, SubmitButton } from '../components/forms';
+import ImageInputList from '../components/ImageInputList';
 import colors from '../config/colors';
+
 
 export default function ListingEditScreen({ navigation })
 {
@@ -38,8 +40,9 @@ export default function ListingEditScreen({ navigation })
         { label: 'Phone', value: 20, backgroundColor: '#800080', icon: 'phone-classic', },
     ];
 
-    const [ category, setCategory ] = useState(categories[ 0 ]);
+    // const [ category, setCategory ] = useState(categories[ 0 ]);
     const [ resourcePath, setResourcePath ] = useState({});
+    const [ imageUris, setImageUris ] = useState([]);
 
     const handlePress = () =>
     {
@@ -51,43 +54,17 @@ export default function ListingEditScreen({ navigation })
             ]);
     };
 
-    const requestCameraPermission = async () =>
+    const handleAdd = (image) =>
     {
-        try
-        {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.CAMERA,
-                {
-                    title: " Camera Permission",
-                    message:
-                        "App needs access to your camera " +
-                        "so you can take awesome pictures.",
-                    buttonNeutral: "Ask Me Later",
-                    buttonNegative: "Cancel",
-                    buttonPositive: "OK"
-                }
-            );
-
-            if (granted === PermissionsAndroid.RESULTS.GRANTED)
-            {
-                alert("You can use the camera");
-            }
-            else
-            {
-                alert("Camera permission denied");
-            }
-        }
-        catch (err)
-        {
-            console.warn(err);
-        }
+        setImageUris([ ...imageUris, image ]);
     };
 
-    useEffect(() =>
+    const handleRemove = (image) =>
     {
+        setImageUris(imageUris.filter((imageUri) => imageUri !== image));
+    };
 
-        requestCameraPermission();
-    }, [])
+
 
     const selectImage = () =>
     {
@@ -149,7 +126,8 @@ export default function ListingEditScreen({ navigation })
                 }
 
             </TouchableWithoutFeedback> */}
-            <ImageInput resourcePath={resourcePath.uri} onChangeImage={(uri) => setResourcePath(uri)} />
+            {/* <ImageInput resourcePath={resourcePath.uri} onChangeImage={(uri) => setResourcePath(uri)} /> */}
+            <ImageInputList resourcePath={imageUris} onAddImage={handleAdd} onRemoveImage={handleRemove} />
 
             <AppForm
                 initialValues={{ title: 'Iphone 14 Pro Max', price: '1000000', description: 'Just the latest IPhone product', category: null }}
