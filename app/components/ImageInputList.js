@@ -1,10 +1,15 @@
+import { useFormikContext } from 'formik';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { ErrorMessage } from './forms';
 import ImageInput from './ImageInput';
-export default function ImageInputList({ resourcePath = [], onRemoveImage, onAddImage })
+
+export default function ImageInputList({ resourcePath = [], onRemoveImage, onAddImage, name, })
 {
     const scrollView = useRef();
+    const { errors, touched } = useFormikContext();
+
 
     return (
         <View>
@@ -26,8 +31,13 @@ export default function ImageInputList({ resourcePath = [], onRemoveImage, onAdd
                     )}
 
                     <ImageInput onChangeImage={(image) => onAddImage(image)} />
+
                 </View>
+
             </ScrollView>
+            {resourcePath.length >= 1 ?
+                null : <ErrorMessage error={errors[ name ]} visible={touched[ name ]} />
+            }
         </View>
     );
 }

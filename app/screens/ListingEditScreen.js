@@ -1,44 +1,59 @@
-import { useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { useLayoutEffect, useState } from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import * as Yup from 'yup';
 import { CategoryPickerItem, Screen } from '../components';
 import { AppForm, AppFormField, AppFormPicker, SubmitButton } from '../components/forms';
 import ImageInputList from '../components/ImageInputList';
 import colors from '../config/colors';
+import data from '../config/data';
+
 
 
 export default function ListingEditScreen({ navigation })
 {
+
+    useLayoutEffect(() =>
+    {
+        navigation.setOptions({
+            headerShown: true,
+            headerRight: () => (
+                <View>
+                    <Text style={{ color: colors.black }}>Cancel</Text>
+                </View>
+            ),
+
+            headerLeft: () => (
+                <View>
+                    <Text style={{ color: colors.black }}>Back</Text>
+                </View>
+            ),
+
+            headerTintColor: '#fff',
+
+            title: 'Post',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+
+            headerStyle: {
+                backgroundColor: '#f4511e',
+            },
+
+
+
+
+        });
+    }, [ navigation ]);
+
     const validationSchema = Yup.object().shape({
         title: Yup.string().required().min(1).label('Title'),
         price: Yup.number().required().min(1).max(10000000).label('Price'),
         description: Yup.string().label('Description'),
         category: Yup.object().required().nullable().label('Category'),
+        images: Yup.array().min(1, "At least one image is required.")
     });
 
-    const categories = [
-        { label: 'Phone', value: 1, backgroundColor: '#ff0000', icon: 'cellphone', },
-        { label: 'Computer', value: 2, backgroundColor: '#00ff00', icon: 'desktop-mac', },
-        { label: 'Tablet', value: 3, backgroundColor: '#0000ff', icon: 'tablet-mac', },
-        { label: 'TV', value: 4, backgroundColor: '#ffff00', icon: 'television', },
-        { label: 'Speaker', value: 5, backgroundColor: '#00ffff', icon: 'speaker', },
-        { label: 'Headphones', value: 6, backgroundColor: '#ff00ff', icon: 'headphones', },
-        { label: 'Keyboard', value: 7, backgroundColor: '#800000', icon: 'keyboard', },
-        { label: 'Mouse', value: 8, backgroundColor: '#008000', icon: 'mouse', },
-        { label: 'Printer', value: 9, backgroundColor: '#000080', icon: 'printer', },
-        { label: 'Scanner', value: 10, backgroundColor: '#808000', icon: 'scanner', },
-        { label: 'Camera', value: 11, backgroundColor: '#008080', icon: 'camera', },
-        { label: 'Game Console', value: 12, backgroundColor: '#800080', icon: 'gamepad-variant', },
-        { label: 'Game Controller', value: 13, backgroundColor: '#808080', icon: 'gamepad', },
-        { label: 'Game', value: 14, backgroundColor: '#c0c0c0', icon: 'gamepad-square', },
-        { label: 'Laptop', value: 15, backgroundColor: '#800000', icon: 'laptop', },
-        { label: 'Monitor', value: 16, backgroundColor: '#008000', icon: 'monitor', },
-        { label: 'Router', value: 17, backgroundColor: '#000080', icon: 'router-wireless', },
-        { label: 'Modem', value: 18, backgroundColor: '#808000', icon: 'modem', },
-        { label: 'Phone', value: 19, backgroundColor: '#008080', icon: 'phone', },
-        { label: 'Phone', value: 20, backgroundColor: '#800080', icon: 'phone-classic', },
-    ];
 
     // const [ category, setCategory ] = useState(categories[ 0 ]);
     const [ resourcePath, setResourcePath ] = useState({});
@@ -120,25 +135,28 @@ export default function ListingEditScreen({ navigation })
 
     return (
         <Screen style={styles.container}>
-            {/* <Button title='Select Image' onPress={selectImage} />
-            <TouchableWithoutFeedback onLongPress={handlePress}>
-                {!resourcePath.uri ? (<Image source={resourcePath.uri && { uri: resourcePath.uri }} />) : (<Image source={resourcePath.uri && { uri: resourcePath.uri }} style={{ width: 100, height: 100, borderRadius: 50, }} />)
-                }
 
-            </TouchableWithoutFeedback> */}
-            {/* <ImageInput resourcePath={resourcePath.uri} onChangeImage={(uri) => setResourcePath(uri)} /> */}
-            <ImageInputList resourcePath={imageUris} onAddImage={handleAdd} onRemoveImage={handleRemove} />
 
             <AppForm
-                initialValues={{ title: 'Iphone 14 Pro Max', price: '1000000', description: 'Just the latest IPhone product', category: null }}
+                initialValues={{
+                    // title: 'Iphone 14 Pro Max', price: '1000000', description: 'Just the latest IPhone product', category: null,
+                    title: '',
+                    price: '',
+                    description: '',
+                    category: null,
+                    images: []
+                }}
                 onSubmit={values => navigation.navigate('Product')}
                 validationSchema={validationSchema}
             >
+
+                <ImageInputList resourcePath={imageUris} onAddImage={handleAdd} onRemoveImage={handleRemove} name="images" />
+
+
                 <AppFormField maxLength={255} name="title" placeholder="Title" placeholderTextColor={colors.medium} />
                 <AppFormField maxLength={11} keyboardType="numeric" name="price" placeholder="Price" width={120} placeholderTextColor={colors.medium} />
-                <AppFormPicker name="category" placeholder="Category" items={categories} width="50%" numberOfColumns={3} PickerItemComponent={CategoryPickerItem}
+                <AppFormPicker name="category" placeholder="Category" items={data.categories} width="50%" numberOfColumns={3} PickerItemComponent={CategoryPickerItem}
                     icon='apps'
-                // selectedItem={categories} onSelectItem={item => setCategory(category)}
                 />
                 <AppFormField maxLength={255} multiline name="description" numberOfLines={3} placeholder="Description" placeholderTextColor={colors.medium} />
                 <SubmitButton title="Submit" />
@@ -151,5 +169,6 @@ const styles = StyleSheet.create({
     container: {
         padding: 10,
         backgroundColor: colors.white,
+
     },
 });
