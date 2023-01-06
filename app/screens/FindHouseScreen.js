@@ -2,10 +2,12 @@ import { useRef, useState } from 'react';
 import { Dimensions, FlatList, Image, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import colors from '../config/colors';
-import { listings } from '../config/data';
+import data from '../config/data';
 const { width } = Dimensions.get('window');
 export default function FindHouseScreen()
 {
+
+    const { listed, listings } = data
 
     const filterIcon = useRef();
     const optionList = [
@@ -21,86 +23,7 @@ export default function FindHouseScreen()
 
 
 
-    const listed = [
-        {
-            id: 1,
-            title: '3 Bedroom Flat',
-            img: require('../assets/profile1.png'),
-            location: 'Lekki Phase 1, Lagos',
-            price: 'N 5,000,000',
-            interior: [
-                require('../assets/profile1.png'),
-                require('../assets/profile2.png'),
-                require('../assets/profile3.png'),
-                require('../assets/profile4.png'),
-            ],
-        },
-        {
-            id: 2,
-            title: '3 Bedroom Flat',
-            img: require('../assets/profile2.png'),
-            location: 'Lekki Phase 1, Lagos',
-            price: 'N 5,000,000',
-            interior: [
-                require('../assets/profile1.png'),
-                require('../assets/profile2.png'),
-                require('../assets/profile3.png'),
-                require('../assets/profile4.png'),
-            ],
-        },
-        {
-            id: 3,
-            title: '3 Bedroom Flat',
-            img: require('../assets/profile1.png'),
-            location: 'Lekki Phase 1, Lagos',
-            price: 'N 5,000,000',
-            interior: [
-                require('../assets/profile1.png'),
-                require('../assets/profile2.png'),
-                require('../assets/profile3.png'),
-                require('../assets/profile4.png'),
-            ],
-        },
-        {
-            id: 4,
-            title: '3 Bedroom Flat',
-            img: require('../assets/profile2.png'),
-            location: 'Lekki Phase 1, Lagos',
-            price: 'N 5,000,000',
-            interior: [
-                require('../assets/profile1.png'),
-                require('../assets/profile2.png'),
-                require('../assets/profile3.png'),
-                require('../assets/profile4.png'),
-            ],
-        },
-        {
-            id: 5,
-            title: '3 Bedroom Flat',
-            img: require('../assets/profile4.png'),
-            location: 'Lekki Phase 1, Lagos',
-            price: 'N 5,000,000',
-            interior: [
-                require('../assets/profile1.png'),
-                require('../assets/profile2.png'),
-                require('../assets/profile3.png'),
-                require('../assets/profile4.png'),
-            ],
-        },
-        {
-            id: 6,
-            title: '3 Bedroom Flat',
-            img: require('../assets/profile3.png'),
-            location: 'Lekki Phase 1, Lagos',
-            price: 'N 5,000,000',
-            interior: [
-                require('../assets/profile1.png'),
-                require('../assets/profile2.png'),
-                require('../assets/profile3.png'),
-                require('../assets/profile4.png'),
-            ],
-        },
-    ]
+
 
 
 
@@ -154,6 +77,9 @@ export default function FindHouseScreen()
             <View style={styles.card}>
                 {listed.map((listing, index) => (
                     <View key={index} style={styles.cardContainer}>
+                        <View style={styles.cardImageContainer}>
+                            <Image source={listing.img} style={styles.cardImage} />
+                        </View>
                         <View style={styles.cardDetails}>
                             <Text style={{ color: colors.primary }}>{listing.title}</Text>
                             <Text style={styles.cardSubTitle}>{listing.location}</Text>
@@ -240,8 +166,9 @@ export default function FindHouseScreen()
                     renderItem={({ item }) => <Card listing={item} />} /> */}
                 {/* <FlatList data={listings} horizontal renderItem={({ item }) => <Card listing={item} />} /> */}
                 {/* <FlatList data={listings} horizontal renderItem={() => console.log('Hello but')} /> */}
-                <FlatList data={listings} keyExtractor={(listing) => listing.id.toString()} horizontal renderItem={Card} />
-                <Card />
+                <FlatList data={listings} keyExtractor={(listing) =>
+                    listing.id.toString()} horizontal
+                    contentContainerStyle={{ paddingLeft: 20, paddingVertical: 20 }} showsHorizontalScrollIndicator={false} renderItem={Card} />
                 {/* //Error dey here. */}
 
 
@@ -388,5 +315,11 @@ const styles = StyleSheet.create({
         marginRight: 20,
         padding: 15,
         borderRadius: 20,
-    }
+    },
+    cardImageContainer: {
+        height: 150,
+        width: "100%",
+        borderRadius: 20,
+        overflow: 'hidden',
+    },
 })
